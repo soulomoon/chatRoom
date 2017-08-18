@@ -45,7 +45,7 @@ io.on('connection', function (socket) {
   var addedUser = false
   // when the client emits 'new message', this listens and executes
   socket.on('new message', function (data) {
-    if (data === 'show' || 'del') {
+    if (data === 'show' || data === 'del') {
       console.log('\n')
       common.showAllKeys(data)
       console.log('\n')
