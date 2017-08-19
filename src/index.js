@@ -1,35 +1,13 @@
+import {getRedisClient} from './getRedisClient'
 // Setup basic express server
 const express = require('express')
 const app = express()
 const server = require('http').createServer(app)
 const io = require('socket.io')(server)
 const port = process.env.PORT || 3000
-const redis = require('redis')
 const common = require('./common.js')
 const path = require('path')
-var redisClient = redis.createClient()
-redisClient.FLUSHALL()
-var redisFlag = false
 
-function getRedisClient () {
-  if (redisFlag) {
-    return redisClient
-  }
-  redisClient = redis.createClient()
-  redisClient.on('end', function () {
-    redisFlag = false
-  })
-  redisClient.on('error', function (err) {
-    // assert(err instanceof Error)
-    // assert(err instanceof redis.AbortError)
-    // assert(err instanceof redis.AggregateError)
-    // The set and get get aggregated in here
-    // assert.strictEqual(err.errors.length, 2)
-    // assert.strictEqual(err.code, 'NR_CLOSED')
-    console.log(err)
-  })
-  return redisClient
-}
 // const io_redis = require('socket.io-redis');
 // io.adapter(io_redis({ host: 'localhost', port: 6379 }));
 server.listen(port, function () {
