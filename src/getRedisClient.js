@@ -1,25 +1,35 @@
-const redis = require('redis')
+import redis from 'redis'
+import bluebird from 'bluebird'
 
-var redisFlag = false
-var redisClient = redis.createClient()
-// redisClient.FLUSHALL()
+bluebird.promisifyAll(redis.RedisClient.prototype)
+bluebird.promisifyAll(redis.Multi.prototype)
 
-export function getRedisClient () {
-  if (redisFlag) {
-    return redisClient
+export function redisLogin (socket) {
+  if (global._REDISWRITEABLE) {
+    global._REDISCLIENT.lrem(`${socket.username}:list`, 0, socket.id)
+  } else {
+    console.log('exiting protection')
   }
-  redisClient = redis.createClient()
-  redisClient.on('end', function () {
-    redisFlag = false
-  })
-  redisClient.on('error', function (err) {
-    // assert(err instanceof Error)
-    // assert(err instanceof redis.AbortError)
-    // assert(err instanceof redis.AggregateError)
-    // The set and get get aggregated in here
-    // assert.strictEqual(err.errors.length, 2)
-    // assert.strictEqual(err.code, 'NR_CLOSED')
-    console.log(err)
-  })
-  return redisClient
 }
+
+//
+// export async function showAllKeys (data) {
+//   if (data === 'del') {
+//     console.log('flush')
+//     global._REDISCLIENT.FLUSHALL()
+//   }
+//
+//   let keys = await global._REDISCLIENT.keysAsync('*')
+//   if (keys.length) {
+//     console.log(keys)
+//     // delete all list
+//     await Promise.all(keys.filter(key => Boolean(key)).map(key => global._REDISCLIENT.lrangeAsync(key, 0, -1)
+//       .then(values => {
+//         if (values) console.log(key + ' : ' + values)
+//         else console.log('no values')
+//       })
+//     ))
+//   } else {
+//     console.log('========all clear==========')
+//   }
+// }

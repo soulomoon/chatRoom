@@ -24,7 +24,7 @@ $(function () {
   var $currentInput = $usernameInput.focus()
 
   var socket = io()
-
+  // socket.request.headers.cookie = 'test: 1'
   function addParticipantsMessage (data) {
     var message = ''
     if (data.numUsers === 1) {

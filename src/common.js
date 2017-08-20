@@ -1,7 +1,7 @@
-import {getRedisClient} from './getRedisClient'
+import {io} from './index'
 
 export function save (socket, sessionId, message) {
-  console('ok, I have save it now')
+  console.log('ok, I have save it now')
 }
 
 export function send (socket, sessionId, message) {
@@ -12,23 +12,8 @@ export function send (socket, sessionId, message) {
   })
 }
 
-export function showAllKeys (data) {
-  if (data === 'del') {
-    console.log('flush')
-    getRedisClient().FLUSHALL()
-  }
-  getRedisClient().keys('*', (err, keys) => {
-    if (err) throw err
-    for (let key of keys) {
-      getRedisClient().type(key, (err, type) => {
-        if (err) throw err
-        if (type === 'list') {
-          getRedisClient().lrange(key, 0, -1, (err, values) => {
-            if (err) throw err
-            console.log(key + ' : ' + values)
-          })
-        }
-      })
-    }
+export function showAllClients (io) {
+  io.of('/').adapter.clients((err, clients) => {
+    console.log(clients) // an array containing all connected socket ids
   })
 }
