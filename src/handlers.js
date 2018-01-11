@@ -13,10 +13,13 @@ export const newMessageHandler = (env) => (data) => {
     // socket.to(name).username
     // let ids = nameToIds(name)
     io.of('/').adapter.allRooms((err, rooms) => {
+      if (err) {
+        console.log(err)
+      }
       if (rooms.includes(name)) {
         socket.to(name)
           .emit('new message', {
-            username: socket.username + '(private message)',
+            username: `${socket.username}(private message)`,
             message: message })
       } else {
         save()
@@ -50,6 +53,9 @@ export const addUserHandler = (env) => (username) => {
   // showAllClients(io)
   socket.join(socket.username)
   io.of('/').adapter.allRooms((err, rooms) => {
+    if (err) {
+      console.log(err)
+    }
     console.log(rooms) // an array containing all rooms (accross every node)
   })
   // echo globally (all clients) that a person has connected
